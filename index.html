@@ -1,0 +1,399 @@
+	<!DOCTYPE>
+	<html lang="en">
+	<head>
+		<title>Fly Swatter</title>
+		<style>
+
+	html { 
+		overflow-x: hidden; 
+	}
+
+			body {
+				padding:0;
+				margin:0;
+			}
+
+			#container {
+				position:relative;
+				top:20px;
+				left:20px;
+				width:800px;
+				height:550px;
+				background: url("https://image.freepik.com/free-photo/an-overhead-view-of-wooden-desk_23-2148058989.jpg") no-repeat #fc0;
+				background-size: 100%;
+				outline: 10px solid brown;
+			}
+
+			.fly {
+				position:absolute;
+				z-index:999;
+			/*	transition: all 0.2s;*/
+				}
+
+			.head {
+				position:relative;
+				width:20px;
+				height:10px;
+				border-radius:50%;
+				background-color:green;
+			}
+
+			.body {
+				position:relative;
+				width:20px;
+				height:40px;
+				border-radius:40%;
+				background-color:yellow;
+			}
+
+			.wings {
+				position:absolute;
+				top:10px;
+				width:20px;
+				border-radius:40%;
+				background-color:tan;
+				opacity: 0.7;
+			}
+
+			.wingleft {
+				left:-5px;
+				top:10px;
+				height:40px;
+				transform:rotate(30deg);
+			}
+
+			.wingright {
+				height:35px;
+				top:15px;
+				left:4px;
+				transform:rotate(-30deg);
+			}
+
+			#swatter {
+				left: 20px;
+				width:20px;
+				height:60px;
+				background: #B74388;
+				position: absolute;
+			}
+
+			#swatter:after {
+				content: "";
+				width: 40px; 
+				height: 40px;
+				position: absolute; 
+				top: -40px; 
+				left: -10px;
+				background: #B74388;
+			}
+
+			.blood {
+				position: absolute;
+				width:40px;
+				height:40px;
+				border-radius:50%;
+				background-color:red;
+			}
+
+			#table {
+				position:absolute;
+				width:800px;
+				height:55px;
+				margin-top:30px;
+				left:20px;
+				outline: 10px solid brown;
+				text-align:center;
+				vertical-align: middle;
+				user-select: none;   
+							}
+
+	#kills {
+
+		font-size:45px;
+		color:red;
+		margin-right:80px;
+		user-select: none;   
+		}
+
+	#sugar-left {
+		font-size:45px;
+			color:brown;
+			margin-top:20px;
+			user-select: none;   
+	}
+
+	.sugar {
+		position:absolute;
+		width:9px;
+		height:9px;
+		background-color:white;
+		user-select: none;   
+	}
+
+	#registration {
+	position:absolute;
+	width:300px;
+	height:200px;
+	top:200px;
+	left:250px;
+	border:2px solid black;
+		background-color:#F0E68C;
+			z-index:9555;
+			padding:15px;
+			padding-top:25px;
+	}
+
+	#nam {
+	width:190px;
+	}
+
+	.answer {
+		position:absolute;
+		left:220px;
+		top: 180px;
+		width:350px;
+		height:250px;
+		border:2px solid white;
+		background-color: pink;
+		/* text-align:center; */
+		z-index:9666;
+	}
+	.answer span {
+		position: absolute;
+		left:20%;
+		top:30%;
+		font-size:25px;
+		color:red;
+	}
+
+	.close {
+		position:absolute;
+		left:35%;
+		top:60%;
+	width: 100px;
+	}
+
+	#nameContainer {
+		position:absolute;
+				width:800px;
+				height:55px;
+				margin-top:90px;
+				left:20px;
+				outline: 10px solid brown;
+				text-align:center;
+				vertical-align: middle;
+				user-select: none;   
+				color: red;
+				font-size:25px;
+	}
+
+	#Logout {
+position:absolute;
+width:100px;
+height: 40px;
+right: 40px;
+top:10px;
+font-size:20px;
+color:orangered;
+/* visibility:hidden; */
+/* cursor: crosshair; */
+	}
+
+
+
+		</style>
+	</head>
+	<body>
+
+		<div id="container"></div>
+
+
+		<div id="table">
+			<span id="kills">Kills:<span>0</span></span>
+			<span id="sugar-left">Sugar left:<span>20</span></span>
+		</div>
+			
+		<div id="nameContainer"><button id="Logout">Logout</button></div>
+
+		<div id="swatter"></div>
+
+
+	<div id="registration">
+	<form name="form">
+		<br><br>
+		<label for="nam">Your name <input name="nameForm" id="nam"></label><br><br><br>
+			<label for="pass">Your password  <input name="passwordForm" id="pass" type="password"></label><br><br><br>
+			<input type="button" value="Log In" style="margin-left:30px" name="loginButton">
+			<input type="button" value="Sign Up" style="margin-left:90px" name="regButton">
+	</form>
+
+	</div>
+
+		<script>
+			'use strict';
+
+	document.onclick = function(e) { // показывает координаты точки клика
+		console.log(e.clientX + ':' + e.clientY);
+	};
+
+	function start() {
+		
+	function getRandomIntInclusive(min, max) {
+		min = Math.ceil(min);
+		max = Math.floor(max);
+	return Math.floor(Math.random() * (max - min + 1)) + min; //Максимум и минимум включаются
+	}
+
+	let container =  document.querySelector('#container');
+	document.body.style.cursor = 'none';
+	let swatter = document.querySelector('#swatter');
+	let killsTable = document.querySelector('#kills').children[0];
+	let sugarLeft = document.querySelector('#sugar-left').children[0];
+	let toFly = null;
+	let fly = null;
+	let sugar = null;
+
+	class createFlies {
+		constructor(bodyColor, headColor, speed, posTop, posLeft) {
+		this.bodyColor = bodyColor || 'yellow';
+		this.headColor = headColor || 'green';
+		this.speed = speed || 1000;
+		this.posTop = posTop || '200px';
+		this.posLeft = posLeft || '400px';
+			}
+
+	create() {
+	let onemore = '<div class="fly"><div class="head"></div><div class="body"></div><div class="legs"></div><div class="wings wingleft"></div><div class="wings wingright"></div></div>';
+	container.insertAdjacentHTML('afterbegin', onemore);
+	document.querySelector('.body').style.backgroundColor = this.bodyColor;
+	document.querySelector('.head').style.backgroundColor = this.headColor;
+	fly = document.querySelector('.fly');
+		fly.style.top = this.posTop;
+		fly.style.left = this.posLeft;
+		toFly = setInterval(()=>this.flying(), this.speed);
+	}
+
+	flying () {
+		let updown = getRandomIntInclusive(-100, 100);
+		let leftright = getRandomIntInclusive(-100, 100);
+
+		if (fly.getBoundingClientRect().left + leftright < 20) leftright = -leftright;
+		if (fly.getBoundingClientRect().left + leftright + 20 > 780) {
+			leftright = -leftright;
+		}
+		fly.style.left = fly.getBoundingClientRect().left - 20 + leftright + 'px';
+
+		if (fly.getBoundingClientRect().top + updown < 20) updown = -updown;
+		if (fly.getBoundingClientRect().top + updown + 50 >= 530) updown = -updown;
+		fly.style.top = fly.getBoundingClientRect().top - 20 + updown + 'px';
+		this.eatSugar();
+	}
+	eatSugar() {
+	for (let i = 0; i < sugar.length; i++) {
+		let flyLeft =  +parseInt(fly.style.left);
+		let flyTop =  +parseInt(fly.style.top);
+		let sugarLeft = +parseInt(sugar[i].style.left);
+		let sugarTop = +parseInt(sugar[i].style.top);
+		if ( ( (flyLeft <= sugarLeft && sugarLeft <= flyLeft+20) ) && (flyTop <= sugarTop && sugarTop <= flyTop+40 ) ){
+			sugar[i].remove();
+	document.querySelector('#sugar-left').children[0].innerHTML--;
+	break;
+		}
+	}
+	if (+document.querySelector('#sugar-left').children[0].innerHTML < 1) console.log('You lost!');
+	}
+	}
+
+
+	function onMouseMove(event) {
+		moveAt(event.pageX, event.pageY);
+		function moveAt(pageX, pageY) {
+			swatter.style.left = pageX +10 + 'px';
+			swatter.style.top = pageY+40 + 'px';
+		}
+	}
+	document.addEventListener('mousemove', onMouseMove);
+
+	document.addEventListener('click', beat);
+
+	function beat (event) {
+		let flyLeft = (parseInt(fly.style.left) );
+		let flyRight = (parseInt(fly.style.left) +20);
+		let flyTop = (parseInt(fly.style.top) );
+		let flyBottom = (parseInt(fly.style.top) + 50);
+		if ( (flyLeft >= event.clientX-20 && flyLeft <= event.clientX +20 || 
+			(flyRight >= event.clientX-20 && flyRight <= event.clientX+20) ) && 
+			(flyTop >= event.clientY-20 && flyTop <= event.clientY +20 || 
+				(flyBottom >= event.clientY-20 && flyBottom <= event.clientY+20)) )  killed();
+	}
+
+	function killed() {
+		let div = document.createElement('div');
+		div.className = "blood";
+		div.style.left = parseInt(fly.style.left) +10 + 'px' ;
+		div.style.top = parseInt(fly.style.top) +25 + 'px'
+		container.append(div);
+		fly.remove();
+		fly = null;
+		clearInterval(toFly);
+		nextFly();
+		killsTable.innerHTML++;
+	}
+
+	function nextFly () {
+	let speed = getRandomIntInclusive(200, 1000);
+	let bodyColor = 'green';
+	if (speed < 400) bodyColor = 'red';
+	else if (speed < 700) bodyColor = 'yellow';
+	else bodyColor = 'green';
+	let posLeft = getRandomIntInclusive(50, 750);
+	let posTop = posLeft * Math.random();
+	let headColor = ['#FF6347', '#00BFFF', '#CD853F'][getRandomIntInclusive(0, 2)];
+	new createFlies(bodyColor, headColor, speed, posTop, posLeft).create();
+	}
+	nextFly();
+
+
+	function putSugar () {
+		for (let i = 0; i < 20; i++) {
+	let sugar = document.createElement('div');//containercreate
+	sugar.className = 'sugar';
+	sugar.style.top = getRandomIntInclusive(50, 500);
+	sugar.style.left = getRandomIntInclusive(50, 750);
+	container.append(sugar);
+		}
+		sugar = document.querySelectorAll('.sugar');
+	}
+	putSugar();
+
+	// container.addEventListener('mouseenter', hideSwatter);
+	// container.addEventListener('mouseout', showSwatter);
+
+
+    // function hideSwatter () {
+    //     swatter.style.visibility = 'hidden';
+    // }
+
+    // function showSwatter () {
+    //     swatter.style.visibility = 'visible';
+    // }
+
+	logoutButton.onclick = function () {
+		console.log(65656)
+		start();
+	}
+
+
+
+	}
+
+
+
+
+
+	</script>
+
+	<script src="form.js"></script>
+	</body>
+
+	</html>
